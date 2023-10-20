@@ -27,4 +27,4 @@ const RoomSchema = new mongoose.Schema({
 },
 { timestamps: true });
 
-export default mongoose.model("User", RoomSchema);
+export default mongoose.model("Room", RoomSchema);

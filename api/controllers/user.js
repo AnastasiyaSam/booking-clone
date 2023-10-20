@@ -25,12 +25,11 @@ export const deleteUser = async (req, res, next) => {
 }
 
 export const getUser = async (req, res, next) => {
-    const newUser = new User(req.body);
     try {
-        const User = await User.findById(
+        const user = await user.findById(
             req.params.id
         );
-        res.status(200).json(User)
+        res.status(200).json(user)
     } catch (err) {
        next(err);
     }
