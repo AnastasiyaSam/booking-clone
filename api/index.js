@@ -6,8 +6,12 @@ import usersRoute  from "./routes/user.js"
 import hotelsRoute  from "./routes/hotels.js"
 import roomsRoute  from "./routes/rooms.js"
 import cookieParser from "cookie-parser"
+import cors from 'cors'
+
+
 
 const app = express();
+
 dotenv.config();
 
 const connect = async () => {
@@ -28,8 +32,11 @@ app.get("/", (req, res) =>{
 });
 
 // middlewares
+app.use(cors());
+
 app.use(express.json());
 app.use(cookieParser());
+
 
 app.use("/api/auth", authRoute)
 app.use("/api/hotels", hotelsRoute)
