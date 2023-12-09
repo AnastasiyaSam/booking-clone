@@ -1,8 +1,8 @@
 import "./list.css";
 import Navbar from "../../components/navbar/Navbar";
 import Header from "../../components/header/Header";
-import { useLocation } from "react-router-dom";
-import { useState} from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import useFetch from "../../hooks/useFetch";
 import { format } from "date-fns";
 import { DateRange } from "react-date-range";
@@ -14,8 +14,23 @@ const List = () => {
   const [date, setDate] = useState(location.state.date);
   const [openDate, setOpenDate] = useState(false);
   const [options, setOptions] = useState(location.state.options);
+  const [inputValue, setInputValue] = useState(location.state.destination)
+  const [localData, setLocalData] = useState([]);
 
-  const { data, loading, error, refetch } = useFetch(`http://localhost:8800/api/hotels/findByCity?city=${destination}`)
+  const fetchHotelDataByCountry = async () => {
+    try {
+      const response = await fetch(`http://localhost:8800/api/hotels/findByCity?city=${inputValue}`);
+      const hotelsRes = await response.json();
+      setLocalData(hotelsRes);
+      ;
+    } catch (error) {
+      console.log(error);
+    } 
+    
+  };
+  useEffect(() => {
+    fetchHotelDataByCountry();
+  }, []);
 
   return (
     <div>
@@ -27,7 +42,7 @@ const List = () => {
             <h1 className="lsTitle">Search</h1>
             <div className="lsItem">
               <label>Destination</label>
-              <input placeholder={destination} type="text" />
+              <input placeholder={destination} value={inputValue} onChange={e => setInputValue(e.target.value)} type="text" />
             </div>
             <div className="lsItem">
               <label>Check-in Date</label>
@@ -87,11 +102,13 @@ const List = () => {
                 </div>
               </div>
             </div>
-            <button>Search</button>
+            <button
+            onClick={fetchHotelDataByCountry}
+            >Search</button>
           </div>
           <div className="listResult">
-            {loading? "loading" : <>
-            {data.map(item =>(
+            {localData.length === 0 ? "loading" : <>
+            {localData.map(item =>(
               <SearchItem item={item} key={item._d}/>
             ))}
             </>}
