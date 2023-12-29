@@ -1,7 +1,7 @@
 import "./searchItem.css";
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
-const SearchItem = ({item}) => {
+const SearchItem = ({ item }) => {
   return (
     <div className="searchItem">
       <img
@@ -17,7 +17,7 @@ const SearchItem = ({item}) => {
           Studio Apartment with Air conditioning
         </span>
         <span className="siFeatures">
-         {item.desc}
+          {item.desc}
         </span>
         <span className="siCancelOp">Free cancellation </span>
         <span className="siCancelOpSubtitle">
@@ -25,16 +25,19 @@ const SearchItem = ({item}) => {
         </span>
       </div>
       <div className="siDetails">
-       { item.rating && <div className="siRating">
+        {item.rating && <div className="siRating">
           <span>Excellent</span>
           <button>{item.rating}</button>
         </div>}
         <div className="siDetailTexts">
           <span className="siPrice">{item.cheapestPrice}</span>
           <span className="siTaxOp">Includes taxes and fees</span>
-          <Link> to={`/hotels/${item._id}`}
+          <Link to={`/hotels/${item._id}`}>
+            <button className="siCheckButton">
+              See availability
+            </button>
           </Link>
-          <button className="siCheckButton">See availability</button>
+
         </div>
       </div>
     </div>

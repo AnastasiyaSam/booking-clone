@@ -15,22 +15,14 @@ const List = () => {
   const [openDate, setOpenDate] = useState(false);
   const [options, setOptions] = useState(location.state.options);
   const [inputValue, setInputValue] = useState(location.state.destination)
-  const [localData, setLocalData] = useState([]);
+  const [min, setMin] = useState(undefined);
+  const [max, setMax]= useState(undefined);
 
-  const fetchHotelDataByCountry = async () => {
-    try {
-      const response = await fetch(`http://localhost:8800/api/hotels/findByCity?city=${inputValue}`);
-      const hotelsRes = await response.json();
-      setLocalData(hotelsRes);
-      ;
-    } catch (error) {
-      console.log(error);
-    } 
-    
+  const {data, loading, error, reFetch} = useFetch(`http://localhost:8800/api/hotels/findByCity?city=${inputValue}&min=${min || 0}&max=${max ||999}`)
+
+  const handleClick = () => {
+    reFetch();  
   };
-  useEffect(() => {
-    fetchHotelDataByCountry();
-  }, []);
 
   return (
     <div>
@@ -65,13 +57,13 @@ const List = () => {
                   <span className="lsOptionText">
                     Min price <small>per night</small>
                   </span>
-                  <input type="number" className="lsOptionInput" />
+                  <input type="number" onChange={e => setMin(e.target.value)} className="lsOptionInput" />
                 </div>
                 <div className="lsOptionItem">
                   <span className="lsOptionText">
                     Max price <small>per night</small>
                   </span>
-                  <input type="number" className="lsOptionInput" />
+                  <input type="number" onChange={e => setMax(e.target.value)} className="lsOptionInput" />
                 </div>
                 <div className="lsOptionItem">
                   <span className="lsOptionText">Adult</span>
@@ -103,13 +95,13 @@ const List = () => {
               </div>
             </div>
             <button
-            onClick={fetchHotelDataByCountry}
+            onClick={handleClick}
             >Search</button>
           </div>
           <div className="listResult">
-            {localData.length === 0 ? "loading" : <>
-            {localData.map(item =>(
-              <SearchItem item={item} key={item._d}/>
+            {loading ? "loading" : <>
+            {data.map(item =>(
+              <SearchItem item={item} key={item._id}/>
             ))}
             </>}
           </div>
