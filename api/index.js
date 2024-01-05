@@ -33,9 +33,8 @@ app.get("/", (req, res) =>{
 
 // middlewares
 app.use(cors());
-
-app.use(express.json());
 app.use(cookieParser());
+app.use(express.json());
 
 
 app.use("/api/auth", authRoute)

@@ -24,7 +24,7 @@ export const login = async (req, res, next) => {
         const user = await User.findOne({ username: req.body.username })
         if (!user) return next(createError(404, "user not found!"))
 
-        const isPasswordCorrect = await bcrypt.compare(req.body.passsword, user.password)
+        const isPasswordCorrect = await bcrypt.compare(req.body.password, user.password)
         if (!isPasswordCorrect) return next(createError(400, "wrong password or username!"))
 
         const token = jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWT)
