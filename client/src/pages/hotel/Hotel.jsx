@@ -5,7 +5,7 @@ import MailList from "../../components/mailList/MailList";
 import Footer from "../../components/footer/Footer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useFetch from '../../hooks/useFetch'
-import { useLocation } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import {
   faCircleArrowLeft,
   faCircleArrowRight,
@@ -14,14 +14,22 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useContext, useState } from "react";
 import { SearchContext } from "../../context/SearchContext";
+import { AuthContext } from "../../context/AuthContext";
+import Reserve from "../../components/reserve/Reserve";
 
 const Hotel = () => {
   const location = useLocation();
   const id = location.pathname.split("/")[2]
   const [slideNumber, setSlideNumber] = useState(0);
   const [open, setOpen] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
 
-  const { data, loading, error } = useFetch(`http://localhost:8800/api/hotels/find/${id}`)
+
+  const { data, loading, error } = useFetch(`http://localhost:8800/api/hotels/find/${id}`);
+
+
+  const {user} = useContext(AuthContext);
+  const navigate = useNavigate()
 
   const { dates, options } = useContext(SearchContext);
 
@@ -50,11 +58,19 @@ const Hotel = () => {
     setSlideNumber(newSlideNumber)
   };
 
+  const handleClick = () =>{
+    if(user){
+      setOpenModal(true);
+    }else{
+      navigate("/login")
+    }
+  }
+ 
   return (
     <div>
       <Navbar />
       <Header type="list" />
-      {loading ? "loading" :
+      {loading ? "loading" :(
         <div className="hotelContainer">
           {open && (
             <div className="slider">
@@ -79,7 +95,7 @@ const Hotel = () => {
             </div>
           )}
           <div className="hotelWrapper">
-            <button className="bookNow">Reserve or Book Now!</button>
+            <button className="bookNow" onClick={() => handleClick}>Reserve or Book Now!</button>
             <h1 className="hotelTitle">{data.name}</h1>
             <div className="hotelAddress">
               <FontAwesomeIcon icon={faLocationDot} />
@@ -126,8 +142,9 @@ const Hotel = () => {
           <MailList />
           <Footer />
         </div>
+      )}
+      {openModal && <Reserve setOpen={setOpenModal(true)} hotelId={id}/>
       }
-
     </div>
   );
 };
